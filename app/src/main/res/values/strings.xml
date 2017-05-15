@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DeezReviewz</string>
+    <string name="ReviewzListError">Unable to retrieve Reviewz list</string>
+    <string name="ReviewItemError">Unable to retrieve Review item</string>
+    <string name="ReviewItemContentDescription">Review Item Image View</string>
+    <string name="ReviewItemMeasure">Amount: %1s</string>
+</resources>

@@ -26,4 +26,6 @@ public interface ReviewzPresenter {
   void setView(ReviewzView view);
 
   void getReviewz();
+
+  void getUpdatedReviewz();
 }

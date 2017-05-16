@@ -65,17 +65,6 @@ public class ReviewPresenterImpl implements ReviewPresenter {
   @Override
   public void getReview(String ReviewId) {
     view.showLoading();
-/*
-    Converter.Factory converter = GsonConverterFactory.create();
-
-    Retrofit retrofit = new Retrofit.Builder()
-        .baseUrl(Constants.BASE_URL)
-        .addConverterFactory(converter)
-        .build();
-
-
-
-     usdaApi = retrofit.create(UsdaApi.class);*/
 
       usdaApi
               .getReviewzDetail(ReviewId)
@@ -102,67 +91,10 @@ public class ReviewPresenterImpl implements ReviewPresenter {
               });
   }
 
-  @Override
-  public
-  @ColorRes
-  int getReviewColor(Review Review) {
- int colorRes = R.color.ReviewUnknown;
-   /*
-    List<ReviewNutrient> nutrients = Review.getNutrients();
-    if (nutrients != null && nutrients.size() > 0) {
-      ReviewNutrient nutrient = nutrients.get(0);
-      try {
-        double nutrientValue = Double.parseDouble(nutrient.getValue());
-        if (nutrientValue < 0) {
-          colorRes = R.color.ReviewUnknown;
-        } else if (nutrientValue < Constants.YELLOW_LEVEL) {
-          colorRes = R.color.ReviewGreen;
-        } else if (nutrientValue < Constants.RED_LEVEL) {
-          colorRes = R.color.ReviewYellow;
-        } else {
-          colorRes = R.color.ReviewRed;
-        }
-      } catch (NumberFormatException e) {
-        Log.e(ReviewPresenterImpl.class.getSimpleName(), "Error parsing nutrient value");
-      }
-    }
-*/
-    return colorRes;
-  }
 
-  @Override
-  public
-  @DrawableRes
-  int getReviewImage(Review Review) {
-    int drawableRes = R.drawable.yellow;
 
-   /* List<ReviewNutrient> nutrients = Review.getNutrients();
-    if (nutrients != null && nutrients.size() > 0) {
-      ReviewNutrient nutrient = nutrients.get(0);
-      try {
-        double nutrientValue = Double.parseDouble(nutrient.getValue());
-        if (nutrientValue < 0) {
-          drawableRes = R.drawable.yellow;
-        } else if (nutrientValue < Constants.YELLOW_LEVEL) {
-          drawableRes = R.drawable.green;
-        } else if (nutrientValue < Constants.RED_LEVEL) {
-          drawableRes = R.drawable.yellow;
-        } else {
-          drawableRes = R.drawable.red;
-        }
-      } catch (NumberFormatException e) {
-        Log.e(ReviewPresenterImpl.class.getSimpleName(), "Error parsing nutrient value");
-      }
-    }*/
 
-    return drawableRes;
-  }
-
-  /*
-   * Private
-   */
-
-  private void showError() {
+    private void showError() {
     view.showErrorMessage();
   }
 }

@@ -32,7 +32,9 @@ public interface ReviewzView {
 
   void hideLoading();
 
-  void showReviewz(List<Review> reviewzItemList);
+  void updateReviewz(List<Review> reviewzItemList);
+
+    void showReviewz(List<Review> reviewzItemList);
 
   void showErrorMessage();
 

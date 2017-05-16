@@ -24,13 +24,6 @@ package com.example.ankitbansal.rxreviews_carwale.app;
 
 public class Constants {
 
-  public static final String BASE_URL = "http://www.carwale.com/api/";
+  public static final String BASE_URL = "http://stablestg.carwale.com/api/";
 
-  public static final String API_KEY = "XCxHp1AA5PX0l38pv571LKXvEQM42Jr9ArwiT6N0";
-
-  public static final String SUGAR_NUTRIENT = "269";
-
-  public static final int YELLOW_LEVEL = 10;
-
-  public static final int RED_LEVEL = 20;
 }

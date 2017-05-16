@@ -80,4 +80,32 @@ public class ReviewzPresenterImpl implements ReviewzPresenter {
                 });
     }
 
+    @Override
+    public void getUpdatedReviewz() {
+        view.showLoading();
+
+             usdaApi
+                .getReviewzList()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ReviewsResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                    @Override
+                    public void onNext(ReviewsResponse list) {
+
+                        List<Review> foodzItems = list.getReviews();
+
+                        view.updateReviewz(foodzItems);
+
+                        view.hideLoading();
+                    }
+                });
+    }
 }

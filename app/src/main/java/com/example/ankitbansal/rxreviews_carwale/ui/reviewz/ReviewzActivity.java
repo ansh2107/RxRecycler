@@ -23,7 +23,9 @@
 package com.example.ankitbansal.rxreviews_carwale.ui.reviewz;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,11 +37,13 @@ import android.widget.Toast;
 
 import com.example.ankitbansal.rxreviews_carwale.R;
 import com.example.ankitbansal.rxreviews_carwale.app.DeezReviewzApplication;
+import com.example.ankitbansal.rxreviews_carwale.app.ReviewzDiffCallback;
 import com.example.ankitbansal.rxreviews_carwale.app.StringUtils;
 import com.example.ankitbansal.rxreviews_carwale.model.Review;
 import com.example.ankitbansal.rxreviews_carwale.ui.review.ReviewActivity;
 
 import java.util.List;
+
 
 import javax.inject.Inject;
 
@@ -58,22 +62,38 @@ public class ReviewzActivity extends AppCompatActivity implements ReviewzView {
   @BindView(R.id.activity_Reviewz_progressBar)
   ProgressBar progressBar;
 
+  @BindView(R.id.activity_main_swipe_refresh_layout)
+  SwipeRefreshLayout mSwipeRefreshLayout;
+
+
+
+  private ReviewzAdapter mReviewzAdapter;
+
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_reviewz);
 
-    ((DeezReviewzApplication)getApplication()).getAppComponent().inject(this);
+    ((DeezReviewzApplication) getApplication()).getAppComponent().inject(this);
 
     ButterKnife.bind(this);
 
-    ReviewzRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
+    ReviewzRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     presenter.setView(this);
     presenter.getReviewz();
-  }
 
+    mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        refreshContent();
+      }
+    });
+
+  }
   /*
    * ReviewzView
    */
@@ -90,8 +110,28 @@ public class ReviewzActivity extends AppCompatActivity implements ReviewzView {
 
   @Override
   public void showReviewz(List<Review> ReviewzItemList) {
-    ReviewzRecyclerView.setAdapter(new ReviewzAdapter(ReviewzItemList));
+
+
+    mReviewzAdapter = new ReviewzAdapter(ReviewzItemList);
+
+    ReviewzRecyclerView.setAdapter(mReviewzAdapter);
+
     ReviewzRecyclerView.getAdapter().notifyDataSetChanged();
+  }
+
+  @Override
+  public void updateReviewz(List<Review> ReviewzItemList) {
+
+
+    //ReviewzAdapter mReviewzAdapter = new ReviewzAdapter(ReviewzItemList);
+
+    //ReviewzRecyclerView.setAdapter(mReviewzAdapter);
+
+
+
+    mReviewzAdapter.updateRecyclerItems(ReviewzItemList);
+
+    //ReviewzRecyclerView.getAdapter().notifyDataSetChanged();
   }
 
   @Override
@@ -102,6 +142,13 @@ public class ReviewzActivity extends AppCompatActivity implements ReviewzView {
   @Override
   public void launchReviewDetail(String ReviewzItem) {
     ReviewActivity.launch(this, ReviewzItem);
+  }
+
+  private void refreshContent(){
+
+    presenter.setView(this);
+    presenter.getUpdatedReviewz();
+    mSwipeRefreshLayout.setRefreshing(false);
   }
 
 
@@ -120,13 +167,41 @@ public class ReviewzActivity extends AppCompatActivity implements ReviewzView {
       return new ReviewzViewHolder(inflater.inflate(R.layout.list_item_review, parent, false));
     }
 
-    @Override
-    public void onBindViewHolder(ReviewzViewHolder holder, int position) {
-      Review ReviewzItem = ReviewzItemList.get(position);
-      holder.getReviewName().setText(StringUtils.stripPrefix(ReviewzItem.getTitle()));
-      holder.getContainer().setOnClickListener(v -> launchReviewDetail(String.valueOf(ReviewzItem.getReviewId())));
-    }
+      @Override
+      public void onBindViewHolder(ReviewzViewHolder holder, int position) {
+          Review ReviewzItem = ReviewzItemList.get(position);
+          holder.getReviewName().setText(StringUtils.stripPrefix(ReviewzItem.getTitle()));
+          holder.getContainer().setOnClickListener(v -> launchReviewDetail(String.valueOf(ReviewzItem.getReviewId())));
+      }
 
+
+/*      @Override
+    public void onBindViewHolder(ReviewzViewHolder holder, int position,List<Object> payloads) {
+
+      if(payloads.isEmpty()) return;
+      else {
+        Bundle o = (Bundle) payloads.get(0);
+        for (String key : o.keySet()) {
+          if (key.equals("review_id")) {
+
+          } else if (key.equals("review_title")) {
+
+          } else if (key.equals("review_comments")) {
+
+          }
+        }
+      }
+      }*/
+
+
+    public void updateRecyclerItems(List<Review> Reviewzs) {
+      final ReviewzDiffCallback diffCallback = new ReviewzDiffCallback(this.ReviewzItemList, Reviewzs);
+      final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+      this.ReviewzItemList.clear();
+      this.ReviewzItemList.addAll(Reviewzs);
+      diffResult.dispatchUpdatesTo(this);
+    }
     @Override
     public int getItemCount() {
       return ReviewzItemList.size();

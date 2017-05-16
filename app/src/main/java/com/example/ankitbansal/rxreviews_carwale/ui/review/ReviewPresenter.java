@@ -33,9 +33,4 @@ public interface ReviewPresenter {
 
   void getReview(String ReviewId);
 
-  @ColorRes
-  int getReviewColor(Review Review);
-
-  @DrawableRes
-  int getReviewImage(Review Review);
 }
